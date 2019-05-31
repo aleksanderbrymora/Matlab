@@ -1,0 +1,71 @@
+clear;
+circle = imread('C:\Users\Forsons\Documents\School\MatLab\T1.png');
+size = size(circle);
+
+%to set - distance from the camera to the surface in meters
+distanceFromIMG = 1;
+
+%{
+Basing our knowledge on that there are only 2 colours in the image we can
+read the first one into a variable and cycle through all the rows to get
+the coordinates of a circle
+we can then get where are first changes of colour and assume that these
+are edges of a circle
+Then we get the lowest and highest numbers for rows and columns and take an
+average of them to get a centre of a circle
+%}
+colour1 = circle(1,1);
+
+%variables to store coordinates of the circle's edges
+left = size(1);
+right = 0;
+top = size(2);
+bottom = 0;
+
+for r = 1:size(1)
+    for c = 1:size(2)
+        if (circle(r,c) ~= colour1)
+            if (r < left)
+                left = r;
+            end
+            if (r > right)
+                right = r;
+            end
+            if (c < top)
+                top = c;
+            end
+            if (c > bottom)
+                bottom = c;
+            end
+        end
+    end
+end
+
+%%--Calculating middle of the circle
+x = left + ((right - left)/2);
+y = top + ((bottom - top)/2);
+fprintf('1. Middle: [%f, %f]\n', x, y);
+
+%%--Calculating radius of the circle
+radius = (right - left)/2;
+fprintf('2. Radius: %f\n', radius);
+
+%%--Calculating area of the circle
+area = (radius^2)*pi;
+fprintf('3. Area: %f\n', area);
+
+%%--Distance, in meters, from circle's centre to top left corner
+distancePixels = (sqrt(x^2 + y^2));
+pixelWidth = ((distanceFromIMG / sqrt(3))*2)/size(1);
+distanceMeters = distancePixels*pixelWidth;
+fprintf('4. Distance, radius and area in meters\n');
+fprintf('   Distance: %fm\n', distanceMeters);
+
+%%--Radius, in meters, of the circle
+radiusMeters = radius*pixelWidth;
+fprintf('   Radius: %fm\n', radiusMeters);
+
+%%--Area, in meters, of the circle
+pixelAreaMeters = pixelWidth^2;
+areaMeters = area * pixelAreaMeters;
+fprintf('   Area: %fm\n', areaMeters);
